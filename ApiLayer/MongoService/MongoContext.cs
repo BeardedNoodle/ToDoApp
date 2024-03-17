@@ -11,7 +11,7 @@ public class MongoDbContext
     {
         var connectionString = configuration.GetConnectionString("MongoDB");
         var mongoClient = new MongoClient(connectionString);
-        _database = mongoClient.GetDatabase("YourDatabaseName");
+        _database = mongoClient.GetDatabase("TODOO");
     }
 
     public IMongoCollection<User> Users => _database.GetCollection<User>("Users");

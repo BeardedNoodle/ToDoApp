@@ -33,4 +33,10 @@ public class UserController : ControllerBase
         return Ok($"{id}: is id");
     }
 
+    [HttpPost]
+    public async Task<IActionResult> CreateUser(User user, CancellationToken cancellationToken){
+        await _context.Users.InsertOneAsync(user);
+        return Ok();
+    }
+
 }
