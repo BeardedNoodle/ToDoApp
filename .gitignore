@@ -140,3 +140,4 @@ ToDoApp/.vs/ToDoApp/FileContentIndex/e7aabefe-8cc3-4c60-9d04-cec8940d7286.vsidx
 ToDoApp/.vs/VSWorkspaceState.json
 
 .fake
+ApiLayer/appsettings.Development.json
