@@ -1,4 +1,5 @@
-﻿using DataLayer.Mongo.Entity;
+﻿using DataLayer.Mappers;
+using DataLayer.Mongo.Entity;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
@@ -24,7 +25,8 @@ public class UserController : ControllerBase
     {
         var userCollections = _context.Users;
         var users = await userCollections.Find(_ => true).ToListAsync();
-        return Ok(users);
+
+        return Ok(users.Select(x => x.ToModel()));
     }
 
     [HttpGet("get-by-id")]

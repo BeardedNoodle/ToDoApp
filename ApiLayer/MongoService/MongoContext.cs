@@ -9,9 +9,13 @@ public class MongoDbContext
 
     public MongoDbContext(IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("MongoDB");
+
+        
+        var mongoPassword = "B45C5NlkJdRSn5Js"; //Environment.GetEnvironmentVariable("MongoDb_Password");
+        
+        var connectionString = configuration.GetConnectionString("MongoDB")!.Replace("${MongoDb_Password}", mongoPassword);
         var mongoClient = new MongoClient(connectionString);
-        _database = mongoClient.GetDatabase("TODOO");
+        _database = mongoClient.GetDatabase("TODO");
     }
 
     public IMongoCollection<User> Users => _database.GetCollection<User>("Users");
