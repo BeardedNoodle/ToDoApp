@@ -1,14 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DataLayer.Enums;
+using MongoDB.Bson;
 
 namespace DataLayer.Models
 {
         public class UserModel
         {
-                public long Id { get; set; }
+                public string Id { get; set; } = null!;
 
                 public string Username { get; set; } = null!;
 
@@ -23,7 +20,7 @@ namespace DataLayer.Models
 
         public class UserSimpleModel
         {
-                public long Id { get; set; }
+                public string Id { get; set; } = null!;
 
                 public string Username { get; set; } = null!;
 

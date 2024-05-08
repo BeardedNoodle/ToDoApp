@@ -1,11 +1,9 @@
-﻿using DataLayer.Mappers;
+﻿using ApiLayer.Services;
+using DataLayer.Mappers;
+using DataLayer.Models;
 using DataLayer.Mongo.Entity;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
 using ServiceLayer.MongoService;
-using System.ComponentModel;
-using System.Text;
 
 namespace ToDoApp.Controllers;
 
@@ -13,32 +11,30 @@ namespace ToDoApp.Controllers;
 [Route("api/user")]
 public class UserController : ControllerBase
 {
-    private readonly MongoDbContext _context;
+    private readonly UserService _userService;
 
-    public UserController(MongoDbContext context)
+    public UserController(UserService userService)
     {
-        _context = context;
+        _userService = userService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetUsersAsync()
     {
-        var userCollections = _context.Users;
-        var users = await userCollections.Find(_ => true).ToListAsync();
-
-        return Ok(users.Select(x => x.ToModel()));
+        return Ok(await _userService.GetAllAsync());
     }
 
     [HttpGet("get-by-id")]
-    public IActionResult GetByIdAsync([FromQuery] long id)
+    public async Task<IActionResult> GetByIdAsync([FromQuery] string id)
     {
-        return Ok($"{id}: is id");
+        return Ok(await _userService.GetByIdAsync(id));
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateUser(User user, CancellationToken cancellationToken){
-        await _context.Users.InsertOneAsync(user);
-        return Ok();
+    public async Task<IActionResult> CreateUser(UserCreateModel user, CancellationToken cancellationToken)
+    {
+        var result = await _userService.CreateAsync(user);
+        return Ok(result);
     }
 
 }

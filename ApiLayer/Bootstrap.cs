@@ -1,4 +1,5 @@
-﻿using ServiceLayer.MongoService;
+﻿using ApiLayer.Services;
+using ServiceLayer.MongoService;
 using ToDoApp.Controllers;
 
 namespace ToDoApp;
@@ -10,7 +11,7 @@ public static class Bootstrap
         // other services...
 
         services.AddSingleton<MongoDbContext>();
-        services.AddScoped<UserController>();
+        services.AddScoped<UserService>();
         // other configurations...
     }
 

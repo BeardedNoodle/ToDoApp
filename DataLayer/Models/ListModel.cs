@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DataLayer.Enums;
+using MongoDB.Bson;
 
 namespace DataLayer.Models
 {
     public class ListModel
     {
-        public long Id { get; set; }
+        public ObjectId Id { get; set; }
         public string Title { get; set; } = null!;
 
-        public long UserId { get; set; }
+        public ObjectId UserId { get; set; }
 
         public Status Status { get; set; }
 
@@ -22,10 +23,10 @@ namespace DataLayer.Models
 
     public class ListSimpleModel
     {
-        public long Id { get; set; }
+        public ObjectId Id { get; set; }
         public string Title { get; set; } = null!;
 
-        public long UserId { get; set; }
+        public ObjectId UserId { get; set; }
 
         public Status Status { get; set; }
 
@@ -35,7 +36,7 @@ namespace DataLayer.Models
     {
         public string Title { get; set; } = null!;
 
-        public long UserId { get; set; }
+        public ObjectId UserId { get; set; }
 
         public Status Status { get; set; }
 

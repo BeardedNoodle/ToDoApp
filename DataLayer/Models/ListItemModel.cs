@@ -1,10 +1,11 @@
 using DataLayer.Enums;
+using MongoDB.Bson;
 
 namespace DataLayer.Models
 {
     public class ListItemModel
     {
-        public long Id { get; set; }
+        public ObjectId Id { get; set; }
 
         public string Body { get; set; } = null!;
 

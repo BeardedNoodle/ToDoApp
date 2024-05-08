@@ -10,7 +10,7 @@ namespace DataLayer.Mappers
         {
             return new UserModel
             {
-                Id = entity.Id,
+                Id = entity.Id.ToString(),
                 Username = entity.Username,
                 Role = entity.Role
             };
@@ -25,7 +25,7 @@ namespace DataLayer.Mappers
         {
             return new UserSimpleModel
             {
-                Id = entity.Id,
+                Id = entity.Id.ToString(),
                 Username = entity.Username,
                 Role = entity.Role
             };
