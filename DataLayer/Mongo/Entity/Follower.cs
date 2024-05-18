@@ -1,10 +1,12 @@
+using MongoDB.Bson;
+
 namespace DataLayer.Mongo.Entity;
 
 public class Follower : BaseMongo
 {
 
-    public long FollowerUserId { get; set; }
+    public ObjectId FollowerUserId { get; set; }
 
-    public long FollowedUserId { get; set; }
+    public ObjectId FollowedUserId { get; set; }
 
 }

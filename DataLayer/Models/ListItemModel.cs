@@ -5,7 +5,7 @@ namespace DataLayer.Models
 {
     public class ListItemModel
     {
-        public ObjectId Id { get; set; }
+        public string Id { get; set; } = null!;
 
         public string Body { get; set; } = null!;
 

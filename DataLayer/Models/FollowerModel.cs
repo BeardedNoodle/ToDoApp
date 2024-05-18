@@ -7,15 +7,15 @@ namespace DataLayer.Models
 {
     public class FollowerModel
     {
-        public long FollowerUserId { get; set; }
+        public string FollowerUserId { get; set; } = null!;
 
-        public long FollowedUserId { get; set; }
+        public string FollowedUserId { get; set; } = null!;
     }
 
     public class FollowerCreateModel
     {
-        public long FollowerUserId { get; set; }
+        public string FollowerUserId { get; set; } = null!;
 
-        public long FollowedUserId { get; set; }
+        public string FollowedUserId { get; set; } = null!;
     }
 }

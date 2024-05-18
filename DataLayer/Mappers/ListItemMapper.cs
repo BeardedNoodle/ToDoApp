@@ -13,7 +13,7 @@ namespace DataLayer.Mappers
         {
             return new ListItemModel
             {
-                Id = entity.Id,
+                Id = entity.Id.ToString(),
                 Body = entity.Body,
                 ListId = entity.ListId,
                 Status = entity.Status,
@@ -36,6 +36,13 @@ namespace DataLayer.Mappers
                 ListId = model.ListId,
                 Status = model.Status
             };
+        }
+        public static List<ListItem>? ToEntityList(this List<ListItemCreateModel>? models)
+        {
+            if (models == null)
+                return null;
+
+            return models.Select(ToEntity).ToList();
         }
 
         public static void ToUpdateModel(this ListItem item, ListItemUpdateModel model)

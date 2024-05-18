@@ -13,7 +13,7 @@ namespace DataLayer.Mappers
         {
             return new ListModel
             {
-                Id = entity.Id,
+                Id = entity.Id.ToString(),
                 UserId = entity.UserId,
                 Status = entity.Status,
                 ListItems = entity.ListItems.ToModelList()

@@ -9,7 +9,6 @@ public class MongoDbContext
 
     public MongoDbContext(IConfiguration configuration)
     {
-
         var connectionString = configuration.GetConnectionString("MongoDB");
         var mongoClient = new MongoClient(connectionString);
         _database = mongoClient.GetDatabase("TODO");
@@ -19,7 +18,7 @@ public class MongoDbContext
 
     public IMongoCollection<List> Lists => _database.GetCollection<List>("List");
 
-    public IMongoCollection<ListItem> ListItems => _database.GetCollection<ListItem>("ListItems ");
+    public IMongoCollection<ListItem> ListItems => _database.GetCollection<ListItem>("ListItems");
 
     public IMongoCollection<Follower> Followers => _database.GetCollection<Follower>("Users");
 

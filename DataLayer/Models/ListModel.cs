@@ -9,7 +9,7 @@ namespace DataLayer.Models
 {
     public class ListModel
     {
-        public ObjectId Id { get; set; }
+        public string Id { get; set; } = null!;
         public string Title { get; set; } = null!;
 
         public ObjectId UserId { get; set; }
