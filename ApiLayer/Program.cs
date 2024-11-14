@@ -2,7 +2,9 @@ using ToDoApp;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDb(builder.Configuration);
 builder.Services.AddServices();
+
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerSettings();

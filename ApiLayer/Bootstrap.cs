@@ -1,4 +1,6 @@
 ﻿using ApiLayer.Services;
+using DataLayer.Postgre;
+using Microsoft.EntityFrameworkCore;
 using ServiceLayer.MongoService;
 using ToDoApp.Controllers;
 
@@ -10,9 +12,14 @@ public static class Bootstrap
     {
         // other services...
 
-        services.AddSingleton<MongoDbContext>();
         services.AddScoped<UserService>();
         // other configurations...
+    }
+
+    public static void AddDb(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("PostGreSql"), b => b.MigrationsAssembly("DataLayer")));
+        services.AddSingleton<MongoDbContext>();
     }
 
     public static void AddSwaggerSettings(this IServiceCollection services)

@@ -1,6 +1,6 @@
 
 using DataLayer.Models;
-using DataLayer.Mongo.Entity;
+using DataLayer.Postgre.Entity;
 
 namespace DataLayer.Mappers
 {
@@ -10,7 +10,7 @@ namespace DataLayer.Mappers
         {
             return new UserModel
             {
-                Id = entity.Id.ToString(),
+                Id = entity.Id,
                 Username = entity.Username,
                 Role = entity.Role
             };
@@ -25,7 +25,7 @@ namespace DataLayer.Mappers
         {
             return new UserSimpleModel
             {
-                Id = entity.Id.ToString(),
+                Id = entity.Id,
                 Username = entity.Username,
                 Role = entity.Role
             };
@@ -42,9 +42,15 @@ namespace DataLayer.Mappers
             {
                 Username = model.Username,
                 Password = model.Password,
-                Role = Enums.Roles.User,
-                CreatedAt = DateTime.Now,
+                Role = Enums.Roles.User
             };
+        }
+
+
+        public static void ToEntity(this UserUpdateModel model, User entity)
+        {
+            entity.Username = model.Username;
+            entity.Role = model.Role;
         }
     }
 }

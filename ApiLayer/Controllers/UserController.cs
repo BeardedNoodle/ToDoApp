@@ -1,9 +1,6 @@
 ﻿using ApiLayer.Services;
-using DataLayer.Mappers;
 using DataLayer.Models;
-using DataLayer.Mongo.Entity;
 using Microsoft.AspNetCore.Mvc;
-using ServiceLayer.MongoService;
 
 namespace ToDoApp.Controllers;
 
@@ -25,7 +22,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("get-by-id")]
-    public async Task<IActionResult> GetByIdAsync([FromQuery] string id)
+    public async Task<IActionResult> GetByIdAsync([FromQuery] Guid id)
     {
         return Ok(await _userService.GetByIdAsync(id));
     }

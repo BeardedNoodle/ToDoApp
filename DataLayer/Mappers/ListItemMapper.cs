@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using DataLayer.Models;
-using DataLayer.Mongo.Entity;
+using DataLayer.Postgre.Entity;
 
 namespace DataLayer.Mappers
 {
@@ -13,7 +10,7 @@ namespace DataLayer.Mappers
         {
             return new ListItemModel
             {
-                Id = entity.Id.ToString(),
+                Id = entity.Id,
                 Body = entity.Body,
                 ListId = entity.ListId,
                 Status = entity.Status,

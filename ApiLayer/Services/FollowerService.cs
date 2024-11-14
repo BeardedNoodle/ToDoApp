@@ -1,37 +1,45 @@
 
-using DataLayer.Mappers;
 using DataLayer.Models;
-using DataLayer.Mongo.Entity;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using ServiceLayer.MongoService;
+using DataLayer.Models.Base;
+using DataLayer.Postgre;
+using DataLayer.Postgre.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiLayer.Services;
 
-public class FollowerService
+public class FollowerService : BaseService<FollowerModel, Follower>
 {
-    private readonly IMongoCollection<Follower> _collection;
-    public FollowerService(MongoDbContext db)
+    public FollowerService(AppDbContext context) : base(context)
     {
-        _collection = db.Followers;
     }
 
-    public async Task<FollowerModel> CreateAsync(FollowerCreateModel model, CancellationToken cancellationToken = default)
+    protected override DbSet<Follower> GetDbSet()
     {
-        var entity = model.ToEntity();
-        await _collection.InsertOneAsync(entity, null, cancellationToken);
-        return entity.ToModel();
+        throw new NotImplementedException();
+    }
+    public override Task<FollowerModel> CreateAsync(BaseCreateModel model, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 
-    public async Task<List<FollowerModel>> GetByFollower(string userId, CancellationToken cancellationToken = default)
+    public override Task<FollowerModel> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entities = await _collection.Find(x => x.FollowerUserId.Equals(ObjectId.Parse(userId))).ToListAsync(cancellationToken);
-        return entities.ToModelList();
+        throw new NotImplementedException();
     }
 
-    public async Task<List<FollowerModel>> GetByFollowed(string userId, CancellationToken cancellationToken = default)
+    public override Task<List<FollowerModel>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var entities = await _collection.Find(x => x.FollowedUserId.Equals(ObjectId.Parse(userId))).ToListAsync(cancellationToken);
-        return entities.ToModelList();
+        throw new NotImplementedException();
     }
+
+    public override Task<FollowerModel?> GetByIdAsync(Guid Id, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task<FollowerModel> UpdateAsync(BaseUpdateModel model, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
 }

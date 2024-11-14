@@ -1,18 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using DataLayer.Enums;
-using MongoDB.Bson;
+using DataLayer.Models.Base;
 
 namespace DataLayer.Models
 {
-    public class ListModel
+    public class ListModel : BaseModel
     {
-        public string Id { get; set; } = null!;
         public string Title { get; set; } = null!;
 
-        public ObjectId UserId { get; set; }
+        public Guid UserId { get; set; }
 
         public Status Status { get; set; }
 
@@ -21,29 +17,28 @@ namespace DataLayer.Models
         public List<ListItemModel> ListItems { get; set; } = new List<ListItemModel>();
     }
 
-    public class ListSimpleModel
+    public class ListSimpleModel : BaseViewModel
     {
-        public ObjectId Id { get; set; }
         public string Title { get; set; } = null!;
 
-        public ObjectId UserId { get; set; }
+        public Guid UserId { get; set; }
 
         public Status Status { get; set; }
 
     }
 
-    public class ListCreateModel
+    public class ListCreateModel : BaseCreateModel
     {
         public string Title { get; set; } = null!;
 
-        public ObjectId UserId { get; set; }
+        public Guid UserId { get; set; }
 
         public Status Status { get; set; }
 
         public List<ListItemCreateModel>? ListItems { get; set; }
     }
 
-    public class ListUpdateModel
+    public class ListUpdateModel : BaseUpdateModel
     {
         public string Title { get; set; } = null!;
         public Status Status { get; set; }

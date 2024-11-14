@@ -1,37 +1,45 @@
-using DataLayer.Mappers;
 using DataLayer.Models;
-using DataLayer.Mongo.Entity;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using ServiceLayer.MongoService;
+using DataLayer.Models.Base;
+using DataLayer.Postgre;
+using DataLayer.Postgre.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiLayer.Services;
 
-public class ListService
+public class ListService : BaseService<ListModel, List>
 {
-    private readonly IMongoCollection<List> _collection;
-
-    public ListService(MongoDbContext db)
+    public ListService(AppDbContext context) : base(context)
     {
-        _collection = db.Lists;
     }
 
-    public async Task<ListModel> CreateAsync(ListCreateModel model, CancellationToken cancellationToken = default)
+    protected override DbSet<List> GetDbSet()
     {
-        var entity = model.ToEntity();
-        await _collection.InsertOneAsync(entity, null, cancellationToken);
-        return entity.ToModel();
+        throw new NotImplementedException();
     }
 
-    public async Task<List<ListModel>> GetAllAsync(CancellationToken cancellationToken = default)
+    public override Task<ListModel> CreateAsync(BaseCreateModel model, CancellationToken cancellationToken = default)
     {
-        var entites = await _collection.Find(_ => true).ToListAsync(cancellationToken);
-        return entites.ToModelList();
+        throw new NotImplementedException();
     }
 
-    public async Task<ListModel> GetByIdAsync(string id, CancellationToken cancellationToken = default)
+    public override Task<ListModel> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = await _collection.Find(x => x.Id.Equals(ObjectId.Parse(id))).FirstOrDefaultAsync(cancellationToken);
-        return entity.ToModel();
+        throw new NotImplementedException();
     }
+
+    public override Task<List<ListModel>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task<ListModel?> GetByIdAsync(Guid Id, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task<ListModel> UpdateAsync(BaseUpdateModel model, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
 }

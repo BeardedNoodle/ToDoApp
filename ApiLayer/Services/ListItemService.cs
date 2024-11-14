@@ -1,50 +1,45 @@
-using DataLayer.Mappers;
 using DataLayer.Models;
-using DataLayer.Mongo.Entity;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using ServiceLayer.MongoService;
+using DataLayer.Models.Base;
+using DataLayer.Postgre;
+using DataLayer.Postgre.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiLayer.Services;
 
-public class ListItemService
+public class ListItemService : BaseService<ListItemModel, ListItem>
 {
-    private readonly IMongoCollection<ListItem> _collection;
-
-    public ListItemService(MongoDbContext db)
+    public ListItemService(AppDbContext context) : base(context)
     {
-        _collection = db.ListItems;
     }
 
-    public async Task<List<ListItemModel>> GetAllAsync(CancellationToken cancellationToken = default)
+    protected override DbSet<ListItem> GetDbSet()
     {
-        var entites = await _collection.Find(_ => true).ToListAsync(cancellationToken);
-        return entites.ToModelList();
+        throw new NotImplementedException();
     }
 
-    public async Task<ListItemModel> GetByIdAsync(string id)
+    public override Task<ListItemModel> CreateAsync(BaseCreateModel model, CancellationToken cancellationToken = default)
     {
-        var entity = await _collection.Find(x => x.Id.Equals(ObjectId.Parse(id))).FirstOrDefaultAsync();
-        return entity.ToModel();
+        throw new NotImplementedException();
     }
 
-    public async Task<ListItemModel> CreateAsync(ListItemCreateModel model)
+    public override Task<ListItemModel> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = model.ToEntity();
-        await _collection.InsertOneAsync(entity);
-        return entity.ToModel();
+        throw new NotImplementedException();
     }
 
-    public async Task<List<ListItemModel>> CreateAsync(List<ListItemCreateModel> model)
+    public override Task<List<ListItemModel>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var entities = model.ToEntityList();
+        throw new NotImplementedException();
+    }
 
-        if (entities == null || entities.Count == 0)
-        {
-            throw new NotImplementedException();
-        }
-        await _collection.InsertManyAsync(entities);
-        return entities.ToModelList();
+    public override Task<ListItemModel?> GetByIdAsync(Guid Id, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task<ListItemModel> UpdateAsync(BaseUpdateModel model, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 
 }

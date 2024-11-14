@@ -1,37 +1,37 @@
 using DataLayer.Enums;
+using DataLayer.Models.Base;
 using MongoDB.Bson;
 
 namespace DataLayer.Models
 {
-        public class UserModel
+        public class UserModel : BaseModel
         {
-                public string Id { get; set; } = null!;
-
                 public string Username { get; set; } = null!;
 
                 public Roles Role { get; set; }
 
-                public List<ListModel> ListModels { get; set; } = new List<ListModel>();
-
-                public List<UserSimpleModel> Followers { get; set; } = new List<UserSimpleModel>();
-
-                public List<UserSimpleModel> Following { get; set; } = new List<UserSimpleModel>();
         }
 
-        public class UserSimpleModel
+        public class UserSimpleModel : BaseViewModel
         {
-                public string Id { get; set; } = null!;
 
                 public string Username { get; set; } = null!;
 
                 public Roles Role { get; set; }
         }
 
-        public class UserCreateModel
+        public class UserCreateModel : BaseCreateModel
         {
                 public string Username { get; set; } = null!;
 
                 public string Password { get; set; } = null!;
+
+                public Roles Role { get; set; }
+        }
+
+        public class UserUpdateModel : BaseUpdateModel
+        {
+                public string Username { get; set; } = null!;
 
                 public Roles Role { get; set; }
         }
