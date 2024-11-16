@@ -1,4 +1,5 @@
 
+using DataLayer.Mappers;
 using DataLayer.Models;
 using DataLayer.Models.Base;
 using DataLayer.Postgre;
@@ -15,31 +16,78 @@ public class FollowerService : BaseService<FollowerModel, Follower>
 
     protected override DbSet<Follower> GetDbSet()
     {
-        throw new NotImplementedException();
+        return appDbContext.Follower;
     }
-    public override Task<FollowerModel> CreateAsync(BaseCreateModel model, CancellationToken cancellationToken = default)
+    public override async Task<FollowerModel> CreateAsync(BaseCreateModel model, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        if (model is not FollowerCreateModel createModel)
+            throw new ArgumentException("");
+
+        var entity = createModel.ToEntity();
+
+        var result = await SaveAsync(entity!, cancellationToken);
+
+        return result.ToModel();
     }
 
-    public override Task<FollowerModel> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    public override async Task<FollowerModel> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var entity = await FindByIdAsync(id, cancellationToken);
+
+        entity.isDeleted = true;
+        var result = await SaveAsync(entity, cancellationToken);
+        return result.ToModel();
     }
 
-    public override Task<List<FollowerModel>> GetAllAsync(CancellationToken cancellationToken = default)
+    public override async Task<List<FollowerModel>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var results = await GetDbSet().Where(x => !x.isDeleted).Select(x => new FollowerModel
+        {
+            Id = x.Id,
+            FollowedUserId = x.FollowedUserId.ToString(),
+            FollowerUserId = x.FollowerUserId.ToString()
+        }).ToListAsync(cancellationToken);
+        return results;
     }
 
-    public override Task<FollowerModel?> GetByIdAsync(Guid Id, CancellationToken cancellationToken = default)
+    public override async Task<FollowerModel?> GetByIdAsync(Guid Id, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var results = await GetDbSet().Where(x => !x.isDeleted).FirstOrDefaultAsync(cancellationToken);
+
+        if (results == null)
+            throw new KeyNotFoundException();
+
+        return results.ToModel();
     }
 
     public override Task<FollowerModel> UpdateAsync(BaseUpdateModel model, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
+    }
+
+    private async Task<Follower> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var entity = await GetDbSet().Where(x => x.Id == id && !x.isDeleted).FirstOrDefaultAsync(cancellationToken);
+
+        if (entity == null)
+            throw new Exception();
+
+        return entity;
+    }
+
+    private async Task<Follower> SaveAsync(Follower entity, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await GetDbSet().AddAsync(entity, cancellationToken);
+            await appDbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"ERROR : {ex.Message}");
+            throw new Exception();
+        }
+        return entity;
     }
 
 }

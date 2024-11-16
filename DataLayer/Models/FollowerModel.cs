@@ -19,4 +19,5 @@ namespace DataLayer.Models
 
         public string FollowedUserId { get; set; } = null!;
     }
+
 }

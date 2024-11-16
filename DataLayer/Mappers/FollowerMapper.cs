@@ -1,6 +1,5 @@
 using DataLayer.Models;
-using DataLayer.Mongo.Entity;
-using MongoDB.Bson;
+using DataLayer.Postgre.Entity;
 
 namespace DataLayer.Mappers;
 public static class FollowerMapper
@@ -24,8 +23,8 @@ public static class FollowerMapper
     {
         return new Follower()
         {
-            FollowedUserId = ObjectId.Parse(model.FollowedUserId),
-            FollowerUserId = ObjectId.Parse(model.FollowedUserId)
+            FollowedUserId = Guid.Parse(model.FollowedUserId),
+            FollowerUserId = Guid.Parse(model.FollowerUserId),
         };
     }
 }

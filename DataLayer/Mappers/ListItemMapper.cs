@@ -17,12 +17,12 @@ namespace DataLayer.Mappers
             };
         }
 
-        public static List<ListItemModel> ToModelList(this List<ListItem>? entites)
+        public static List<ListItemModel> ToModelList(this List<ListItem>? entities)
         {
-            if (entites == null)
+            if (entities == null)
                 return new List<ListItemModel>();
 
-            return entites.Select(ToModel).ToList();
+            return entities.Select(ToModel).ToList();
         }
 
         public static ListItem ToEntity(this ListItemCreateModel model)
@@ -34,6 +34,11 @@ namespace DataLayer.Mappers
                 Status = model.Status
             };
         }
+        public static void ToEntity(this ListItemUpdateModel model, ListItem item)
+        {
+            item.Body = model.Body;
+            item.Status = model.Status;
+        }
         public static List<ListItem>? ToEntityList(this List<ListItemCreateModel>? models)
         {
             if (models == null)
@@ -42,10 +47,5 @@ namespace DataLayer.Mappers
             return models.Select(ToEntity).ToList();
         }
 
-        public static void ToUpdateModel(this ListItem item, ListItemUpdateModel model)
-        {
-            item.Body = model.Body;
-            item.Status = model.Status;
-        }
     }
 }

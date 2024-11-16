@@ -13,6 +13,9 @@ public static class Bootstrap
         // other services...
 
         services.AddScoped<UserService>();
+        services.AddScoped<ListService>();
+        services.AddScoped<ListItemService>();
+        services.AddScoped<FollowerService>();
         // other configurations...
     }
 

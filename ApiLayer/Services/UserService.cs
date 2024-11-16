@@ -35,7 +35,7 @@ public class UserService : BaseService<UserModel, User>
 
     public override async Task<List<UserModel>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var results = await GetDbSet().Where(x => !x.isDeleted && x.Role != DataLayer.Enums.Roles.Admin).Select(x => new UserModel
+        var results = await GetDbSet().Where(x => !x.isDeleted).Select(x => new UserModel
         {
             Id = x.Id,
             Username = x.Username

@@ -45,7 +45,7 @@ namespace DataLayer.Mappers
             };
         }
 
-        public static void ToUpdateModel(this List entity, ListUpdateModel model)
+        public static void ToEntity(this ListUpdateModel model, List entity)
         {
             entity.Title = model.Title;
             entity.Status = model.Status;
