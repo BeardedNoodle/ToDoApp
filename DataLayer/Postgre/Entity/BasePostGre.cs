@@ -1,4 +1,6 @@
 ﻿
+using DataLayer.Models.Base;
+
 namespace DataLayer.Postgre.Entity;
 
 public class BasePostGre : IAuditFields

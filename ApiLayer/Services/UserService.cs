@@ -50,7 +50,7 @@ public class UserService : BaseService<UserModel, User>
 
         var entity = createModel.ToEntity();
 
-        var result = await SaveUserAsync(entity, cancellationToken);
+        var result = await SaveAsync(entity, cancellationToken);
 
         return result.ToModel();
     }
@@ -59,47 +59,19 @@ public class UserService : BaseService<UserModel, User>
         if (model is not UserUpdateModel updateModel)
             throw new ArgumentException("");
 
-        var entity = await GetUserAsync(model.Id, cancellationToken);
+        var entity = await FindByIdAsync(model.Id, cancellationToken);
 
         updateModel.ToEntity(entity);
 
-        var result = await SaveUserAsync(entity, cancellationToken);
+        var result = await SaveAsync(entity, cancellationToken);
 
         return result.ToModel();
     }
 
     public override async Task<UserModel> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = await GetUserAsync(id, cancellationToken);
+        var result = await DeleteByIdAsync(id, cancellationToken);
 
-        entity.isDeleted = true;
-        var result = await SaveUserAsync(entity, cancellationToken);
         return result.ToModel();
     }
-
-    private async Task<User> GetUserAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        var entity = await GetDbSet().Where(x => x.Id == id && !x.isDeleted).FirstOrDefaultAsync(cancellationToken);
-
-        if (entity == null)
-            throw new Exception("User Not Found");
-
-        return entity;
-    }
-
-    private async Task<User> SaveUserAsync(User entity, CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            await GetDbSet().AddAsync(entity, cancellationToken);
-            await appDbContext.SaveChangesAsync(cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"ERROR : {ex.Message}");
-            throw new Exception(ex.ToString());
-        }
-        return entity;
-    }
-
 }

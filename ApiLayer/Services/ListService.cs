@@ -32,10 +32,8 @@ public class ListService : BaseService<ListModel, List>
 
     public override async Task<ListModel> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = await FindByIdAsync(id, cancellationToken);
+        var result = await DeleteByIdAsync(id, cancellationToken);
 
-        entity.isDeleted = true;
-        var result = await SaveAsync(entity, cancellationToken);
         return result.ToModel();
     }
 
@@ -78,31 +76,6 @@ public class ListService : BaseService<ListModel, List>
         var result = await SaveAsync(entity, cancellationToken);
 
         return result.ToModel();
-    }
-
-    private async Task<List> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        var entity = await GetDbSet().Where(x => x.Id == id && !x.isDeleted).FirstOrDefaultAsync(cancellationToken);
-
-        if (entity == null)
-            throw new Exception();
-
-        return entity;
-    }
-
-    private async Task<List> SaveAsync(List entity, CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            await GetDbSet().AddAsync(entity, cancellationToken);
-            await appDbContext.SaveChangesAsync(cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"ERROR : {ex.Message}");
-            throw new Exception(ex.ToString());
-        }
-        return entity;
     }
 
 }
