@@ -1,4 +1,5 @@
 
+using ApiLayer.Services.Base;
 using DataLayer.Mappers;
 using DataLayer.Models;
 using DataLayer.Models.Base;
@@ -18,7 +19,7 @@ public class FollowerService : BaseService<FollowerModel, Follower>
     {
         return appDbContext.Follower;
     }
-    public override async Task<FollowerModel> CreateAsync(BaseCreateModel model, CancellationToken cancellationToken = default)
+    public override async Task<Result<FollowerModel>> CreateAsync(BaseCreateModel model, CancellationToken cancellationToken = default)
     {
         if (model is not FollowerCreateModel createModel)
             throw new ArgumentException("");
@@ -27,17 +28,20 @@ public class FollowerService : BaseService<FollowerModel, Follower>
 
         var result = await SaveAsync(entity!, cancellationToken);
 
-        return result.ToModel();
+        return Result<FollowerModel>.Success(result.ToModel());
     }
 
-    public override async Task<FollowerModel> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    public override async Task<Result<FollowerModel>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var result = await DeleteByIdAsync(id, cancellationToken);
 
-        return result.ToModel();
+        if (result is null)
+            return Result<FollowerModel>.Failure(FollowerErrors.NotFound);
+
+        return Result<FollowerModel>.Success(result.ToModel());
     }
 
-    public override async Task<List<FollowerModel>> GetAllAsync(CancellationToken cancellationToken = default)
+    public override async Task<Result<List<FollowerModel>>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var results = await GetDbSet().Where(x => !x.isDeleted).Select(x => new FollowerModel
         {
@@ -45,21 +49,28 @@ public class FollowerService : BaseService<FollowerModel, Follower>
             FollowedUserId = x.FollowedUserId.ToString(),
             FollowerUserId = x.FollowerUserId.ToString()
         }).ToListAsync(cancellationToken);
-        return results;
+
+        return Result<List<FollowerModel>>.Success(results);
     }
 
-    public override async Task<FollowerModel?> GetByIdAsync(Guid Id, CancellationToken cancellationToken = default)
+    public override async Task<Result<FollowerModel>> GetByIdAsync(Guid Id, CancellationToken cancellationToken = default)
     {
-        var results = await GetDbSet().Where(x => !x.isDeleted).FirstOrDefaultAsync(cancellationToken);
+        var result = await GetDbSet().Where(x => !x.isDeleted).FirstOrDefaultAsync(cancellationToken);
 
-        if (results == null)
-            throw new KeyNotFoundException();
+        if (result is null)
+            return Result<FollowerModel>.Failure(FollowerErrors.NotFound);
 
-        return results.ToModel();
+        return Result<FollowerModel>.Success(result.ToModel());
     }
 
-    public override Task<FollowerModel> UpdateAsync(BaseUpdateModel model, CancellationToken cancellationToken = default)
+    public override Task<Result<FollowerModel>> UpdateAsync(BaseUpdateModel model, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(Result<FollowerModel>.Failure(FollowerErrors.Forbidden));
     }
+}
+
+public static class FollowerErrors
+{
+    public static readonly ErrorResult NotFound = ErrorResult.NotFound("Follower Not Found", "Not Found");
+    public static readonly ErrorResult Forbidden = ErrorResult.Forbidden("Forbidden", "Forbidden");
 }

@@ -2,6 +2,7 @@ using ApiLayer.Services.Base;
 using DataLayer.Models.Base;
 using DataLayer.Postgre;
 using DataLayer.Postgre.Entity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiLayer.Services;
@@ -20,12 +21,12 @@ where TEntity : BasePostGre
 
     abstract protected DbSet<TEntity> GetDbSet();
 
-    abstract public Task<TModel?> GetByIdAsync(Guid Id, CancellationToken cancellationToken = default);
-    abstract public Task<List<TModel>> GetAllAsync(CancellationToken cancellationToken = default);
-    abstract public Task<TModel> UpdateAsync(BaseUpdateModel model, CancellationToken cancellationToken = default);
-    abstract public Task<TModel> CreateAsync(BaseCreateModel model, CancellationToken cancellationToken = default);
+    abstract public Task<Result<TModel>> GetByIdAsync(Guid Id, CancellationToken cancellationToken = default);
+    abstract public Task<Result<List<TModel>>> GetAllAsync(CancellationToken cancellationToken = default);
+    abstract public Task<Result<TModel>> UpdateAsync(BaseUpdateModel model, CancellationToken cancellationToken = default);
+    abstract public Task<Result<TModel>> CreateAsync(BaseCreateModel model, CancellationToken cancellationToken = default);
 
-    abstract public Task<TModel> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+    abstract public Task<Result<TModel>> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
 
     protected async Task<TEntity> SaveAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
@@ -37,24 +38,24 @@ where TEntity : BasePostGre
         catch (Exception ex)
         {
             Console.WriteLine($"ERROR : {ex.Message}");
-            throw new Exception();
+            throw;
         }
         return entity;
     }
 
-    protected async Task<TEntity> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    protected async Task<TEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var entity = await GetDbSet().Where(x => x.Id == id && !x.isDeleted).FirstOrDefaultAsync(cancellationToken);
-
-        if (entity == null)
-            throw new Exception();
 
         return entity;
     }
 
-    protected async Task<TEntity> DeleteByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    protected async Task<TEntity?> DeleteByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var entity = await FindByIdAsync(id, cancellationToken);
+
+        if (entity == null)
+            return null;
 
         entity.isDeleted = true;
         var result = await SaveAsync(entity, cancellationToken);

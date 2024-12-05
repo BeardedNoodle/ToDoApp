@@ -1,3 +1,4 @@
+using ApiLayer.Services.Base;
 using DataLayer.Mappers;
 using DataLayer.Models;
 using DataLayer.Models.Base;
@@ -18,7 +19,7 @@ public class ListService : BaseService<ListModel, List>
         return appDbContext.Lists;
     }
 
-    public override async Task<ListModel> CreateAsync(BaseCreateModel model, CancellationToken cancellationToken = default)
+    public override async Task<Result<ListModel>> CreateAsync(BaseCreateModel model, CancellationToken cancellationToken = default)
     {
         if (model is not ListCreateModel createModel)
             throw new ArgumentException("");
@@ -27,17 +28,20 @@ public class ListService : BaseService<ListModel, List>
 
         var result = await SaveAsync(entity, cancellationToken);
 
-        return result.ToModel();
+        return Result<ListModel>.Success(result.ToModel());
     }
 
-    public override async Task<ListModel> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    public override async Task<Result<ListModel>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var result = await DeleteByIdAsync(id, cancellationToken);
 
-        return result.ToModel();
+        if (result is null)
+            return Result<ListModel>.Failure(ListErrors.NotFound);
+
+        return Result<ListModel>.Success(result.ToModel());
     }
 
-    public override async Task<List<ListModel>> GetAllAsync(CancellationToken cancellationToken = default)
+    public override async Task<Result<List<ListModel>>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var results = await GetDbSet().Where(x => !x.isDeleted).Select(x => new ListModel
         {
@@ -46,10 +50,10 @@ public class ListService : BaseService<ListModel, List>
             Status = x.Status,
             UserId = x.UserId,
         }).ToListAsync(cancellationToken);
-        return results;
+        return Result<List<ListModel>>.Success(results);
     }
 
-    public override async Task<ListModel?> GetByIdAsync(Guid Id, CancellationToken cancellationToken = default)
+    public override async Task<Result<ListModel>> GetByIdAsync(Guid Id, CancellationToken cancellationToken = default)
     {
         var entity = await GetDbSet().Where(x => x.Id == Id && !x.isDeleted).Select(x => new List
         {
@@ -60,22 +64,28 @@ public class ListService : BaseService<ListModel, List>
             ListItems = x.ListItems
         }).FirstOrDefaultAsync(cancellationToken);
         if (entity == null)
-            return null;
-        return entity.ToModel();
+            return Result<ListModel>.Failure(ListErrors.NotFound);
+        return Result<ListModel>.Success(entity.ToModel());
     }
 
-    public override async Task<ListModel> UpdateAsync(BaseUpdateModel model, CancellationToken cancellationToken = default)
+    public override async Task<Result<ListModel>> UpdateAsync(BaseUpdateModel model, CancellationToken cancellationToken = default)
     {
         if (model is not ListUpdateModel updateModel)
             throw new ArgumentException("");
 
         var entity = await FindByIdAsync(model.Id, cancellationToken);
 
+        if (entity == null)
+            return Result<ListModel>.Failure(ListErrors.NotFound);
         updateModel.ToEntity(entity);
 
         var result = await SaveAsync(entity, cancellationToken);
 
-        return result.ToModel();
+        return Result<ListModel>.Success(result.ToModel());
     }
+}
 
+public static class ListErrors
+{
+    public static readonly ErrorResult NotFound = ErrorResult.NotFound("List Not Found", "Not Found");
 }

@@ -1,3 +1,4 @@
+using ApiLayer.Services.Base;
 using DataLayer.Mappers;
 using DataLayer.Models;
 using DataLayer.Models.Base;
@@ -18,7 +19,7 @@ public class ListItemService : BaseService<ListItemModel, ListItem>
         return appDbContext.ListItems;
     }
 
-    public override async Task<ListItemModel> CreateAsync(BaseCreateModel model, CancellationToken cancellationToken = default)
+    public override async Task<Result<ListItemModel>> CreateAsync(BaseCreateModel model, CancellationToken cancellationToken = default)
     {
         if (model is not ListItemCreateModel createModel)
             throw new ArgumentException("");
@@ -27,17 +28,20 @@ public class ListItemService : BaseService<ListItemModel, ListItem>
 
         var result = await SaveAsync(entity, cancellationToken);
 
-        return result.ToModel();
+        return Result<ListItemModel>.Success(result.ToModel());
     }
 
-    public override async Task<ListItemModel> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    public override async Task<Result<ListItemModel>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var result = await DeleteByIdAsync(id, cancellationToken);
 
-        return result.ToModel();
+        if (result == null)
+            return Result<ListItemModel>.Failure(ListItemErrors.NotFound);
+
+        return Result<ListItemModel>.Success(result.ToModel());
     }
 
-    public override async Task<List<ListItemModel>> GetAllAsync(CancellationToken cancellationToken = default)
+    public override async Task<Result<List<ListItemModel>>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var results = await GetDbSet().Where(x => !x.isDeleted).Select(x => new ListItemModel
         {
@@ -46,32 +50,40 @@ public class ListItemService : BaseService<ListItemModel, ListItem>
             ListId = x.ListId,
             Status = x.Status,
         }).ToListAsync(cancellationToken);
-        return results;
+        return Result<List<ListItemModel>>.Success(results);
     }
 
-    public override async Task<ListItemModel?> GetByIdAsync(Guid Id, CancellationToken cancellationToken = default)
+    public override async Task<Result<ListItemModel>> GetByIdAsync(Guid Id, CancellationToken cancellationToken = default)
     {
-        var results = await GetDbSet().Where(x => !x.isDeleted).FirstOrDefaultAsync(cancellationToken);
+        var result = await GetDbSet().Where(x => !x.isDeleted).FirstOrDefaultAsync(cancellationToken);
 
-        if (results == null)
-            throw new KeyNotFoundException();
+        if (result == null)
+            return Result<ListItemModel>.Failure(ListItemErrors.NotFound);
 
-        return results.ToModel();
+        return Result<ListItemModel>.Success(result.ToModel());
 
     }
 
-    public override async Task<ListItemModel> UpdateAsync(BaseUpdateModel model, CancellationToken cancellationToken = default)
+    public override async Task<Result<ListItemModel>> UpdateAsync(BaseUpdateModel model, CancellationToken cancellationToken = default)
     {
         if (model is not ListItemUpdateModel updateModel)
             throw new ArgumentException("");
 
         var entity = await FindByIdAsync(model.Id, cancellationToken);
 
+        if (entity == null)
+            return Result<ListItemModel>.Failure(ListItemErrors.NotFound);
+
         updateModel.ToEntity(entity);
 
         var result = await SaveAsync(entity, cancellationToken);
 
-        return result.ToModel();
+        return Result<ListItemModel>.Success(result.ToModel());
     }
 
+}
+
+public static class ListItemErrors
+{
+    public static readonly ErrorResult NotFound = ErrorResult.NotFound("List Item Not Found", "Not Found");
 }
