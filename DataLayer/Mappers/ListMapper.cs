@@ -10,8 +10,10 @@ namespace DataLayer.Mappers
             return new ListModel
             {
                 Id = entity.Id,
+                Title = entity.Title,
                 UserId = entity.UserId,
                 Status = entity.Status,
+                User = entity.User?.ToSimpleModel(),
                 ListItems = entity.ListItems.ToModelList()
             };
         }
@@ -25,6 +27,7 @@ namespace DataLayer.Mappers
             return new ListSimpleModel
             {
                 Id = entity.Id,
+                Title = entity.Title,
                 UserId = entity.UserId,
                 Status = entity.Status
             };

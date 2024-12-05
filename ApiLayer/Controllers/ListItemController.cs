@@ -22,7 +22,8 @@ public class ListItemController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetUsersAsync()
     {
-        return Ok(await _service.GetAllAsync());
+        var result = await _service.GetAllAsync();
+        return result.IsSuccess ? Ok(result.Data) : BadRequest();
     }
 
     [HttpGet("get-by-id")]

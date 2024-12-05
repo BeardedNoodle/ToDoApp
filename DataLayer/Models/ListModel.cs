@@ -12,7 +12,7 @@ namespace DataLayer.Models
 
         public Status Status { get; set; }
 
-        public UserSimpleModel User { get; set; } = null!;
+        public UserSimpleModel? User { get; set; }
 
         public List<ListItemModel> ListItems { get; set; } = new List<ListItemModel>();
     }

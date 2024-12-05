@@ -1,6 +1,7 @@
 
 using ApiLayer.Services;
 using DataLayer.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiLayer.Controllers;
@@ -18,19 +19,22 @@ public class ListController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetUsersAsync()
     {
-        return Ok(await _service.GetAllAsync());
+
+        var result = await _service.GetAllAsync();
+        return result.IsSuccess ? Ok(result.Data) : NoContent();
     }
 
     [HttpGet("get-by-id")]
     public async Task<IActionResult> GetByIdAsync([FromQuery] Guid id)
     {
-        return Ok(await _service.GetByIdAsync(id));
+        var result = await _service.GetByIdAsync(id);
+        return result.IsSuccess ? Ok(result.Data) : BadRequest();
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateUser(ListCreateModel model, CancellationToken cancellationToken)
     {
         var result = await _service.CreateAsync(model);
-        return Ok(result);
+        return result.IsSuccess ? Ok(result.Data) : BadRequest();
     }
 }

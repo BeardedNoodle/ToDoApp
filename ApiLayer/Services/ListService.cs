@@ -61,6 +61,7 @@ public class ListService : BaseService<ListModel, List>
             Title = x.Title,
             Status = x.Status,
             UserId = x.UserId,
+            User = x.User,
             ListItems = x.ListItems
         }).FirstOrDefaultAsync(cancellationToken);
         if (entity == null)

@@ -25,9 +25,7 @@ namespace DataLayer.Mappers
         {
             return new UserSimpleModel
             {
-                Id = entity.Id,
-                Username = entity.Username,
-                Role = entity.Role
+                Username = entity.Username
             };
         }
 

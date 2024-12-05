@@ -9,4 +9,6 @@ public class List : BasePostGre
     public Status Status { get; set; }
 
     public virtual List<ListItem>? ListItems { get; set; }
+
+    public virtual User? User { get; set; }
 }
