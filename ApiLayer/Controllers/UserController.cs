@@ -1,4 +1,5 @@
 ﻿using ApiLayer.Services;
+using ApiLayer.Services.Base;
 using DataLayer.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,20 +19,22 @@ public class UserController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetUsersAsync()
     {
-        return Ok(await _userService.GetAllAsync());
+        var result = await _userService.GetAllAsync();
+        return result.IsSuccess ? Ok(result.Data) : result.Error.ToProblemDetails();
     }
 
     [HttpGet("get-by-id")]
     public async Task<IActionResult> GetByIdAsync([FromQuery] Guid id)
     {
-        return Ok(await _userService.GetByIdAsync(id));
+        var result = await _userService.GetByIdAsync(id);
+        return result.IsSuccess ? Ok(result.Data) : result.Error.ToProblemDetails();
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateUser(UserCreateModel user, CancellationToken cancellationToken)
     {
         var result = await _userService.CreateAsync(user);
-        return Ok(result);
+        return result.IsSuccess ? Ok(result.Data) : result.Error.ToProblemDetails();
     }
 
 }

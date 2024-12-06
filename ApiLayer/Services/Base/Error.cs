@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ApiLayer.Services.Base;
 public class ErrorResult
@@ -38,4 +39,35 @@ public enum ErrorType
     Conflict = 2,
     UnAuthorized = 3,
     Forbidden = 4
+}
+
+public static class ErrorResultExtensions
+{
+
+    public static ObjectResult ToProblemDetails(this ErrorResult? error)
+    {
+        if (error == null)
+            throw new ArgumentNullException(nameof(error));
+
+        var details = new ProblemDetails
+        {
+            Title = error.Title,
+            Detail = error.Message,
+            Status = error.GetStatusCode()
+        };
+
+        return new ObjectResult(details) { StatusCode = details.Status };
+    }
+    public static int GetStatusCode(this ErrorResult error)
+    {
+        return error.ErrorId switch
+        {
+            ErrorType.NotFound => StatusCodes.Status404NotFound,
+            ErrorType.Validation => StatusCodes.Status400BadRequest,
+            ErrorType.Conflict => StatusCodes.Status409Conflict,
+            ErrorType.UnAuthorized => StatusCodes.Status401Unauthorized,
+            ErrorType.Forbidden => StatusCodes.Status403Forbidden,
+            _ => StatusCodes.Status500InternalServerError
+        };
+    }
 }
