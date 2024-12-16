@@ -19,6 +19,7 @@ public class UserController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetUsersAsync()
     {
+
         var result = await _userService.GetAllAsync();
         return result.IsSuccess ? Ok(result.Data) : result.Error.ToProblemDetails();
     }

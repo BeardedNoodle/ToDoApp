@@ -1,3 +1,4 @@
+using ApiLayer.ErrorHandling;
 using ToDoApp;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDb(builder.Configuration);
 builder.Services.AddServices();
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerSettings();
@@ -16,6 +18,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseExceptionHandler(ops => { });
 
 app.UseHttpsRedirection();
 app.MapControllers();
